@@ -5,6 +5,7 @@
 #include <sstream>
 
 #define POSITION (utils::CodePosition(__FILE__, __LINE__, __FUNCTION__))
+#define LOGEXCEPTION(msg)  Exception::CreateAndLog(POSITION,msg)
 
 namespace utils
 {
