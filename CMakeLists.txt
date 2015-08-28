@@ -6,8 +6,12 @@ IF(WIN32)
   set(BOOST_ROOT "d:\\soft\\boost_1_57_0\\boost_1_57_0")
   MESSAGE(STATUS "+ boost root: " ${BOOST_ROOT})
   LINK_DIRECTORIES(${LINK_DIRECTORIES} "d:\\soft\\boost_1_57_0\\build")
-  include (GenerateExportHeader)
 
+  if (MSVC)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  /EHa")
+  endif(MSVC)
+
+  include (GenerateExportHeader)
   macro(DEFINE_EXPORT libname)
 	GENERATE_EXPORT_HEADER(${libname}
       BASE_NAME ${libname}
@@ -18,7 +22,7 @@ IF(WIN32)
 	SET_TARGET_PROPERTIES (${libname} PROPERTIES DEFINE_SYMBOL  "COMPILING_DLL" )
   endmacro(DEFINE_EXPORT)
   
-  find_package(Boost 1.57.0 REQUIRED unit_test_framework system thread iostreams filesystem)
+  find_package(Boost 1.57.0 REQUIRED unit_test_framework)
 else(WIN32)
 
   macro(DEFINE_EXPORT libname)
@@ -28,12 +32,9 @@ else(WIN32)
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG -Wall -Werror")
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -Werror")
 
-  set(BOOST_ROOT "/home/lsv/soft/cpp/boost_1_57_0")
-  MESSAGE(STATUS "+ boost root: " ${BOOST_ROOT})
-  LINK_DIRECTORIES(${LINK_DIRECTORIES} "/mnt/data/soft/cpp/boost_1_57_0/stage/lib")
   set(BoostUSESTATIC_LIBS OFF)
 
-  find_package(Boost 1.57.0 REQUIRED unit_test_framework system thread iostreams filesystem program_options)
+  find_package(Boost 1.57.0 REQUIRED unit_test_framework)
 ENDIF(WIN32)
 
 
