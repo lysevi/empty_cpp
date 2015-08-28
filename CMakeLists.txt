@@ -5,10 +5,10 @@ IF(WIN32)
   MESSAGE(STATUS "WIN32:")
   set(BOOST_ROOT "d:\\soft\\boost_1_57_0\\boost_1_57_0")
   MESSAGE(STATUS "+ boost root: " ${BOOST_ROOT})
-  LINK_DIRECTORIES(${LINK_DIRECTORIES} "d:\\soft\\boost_1_57_0\\build")
+  #LINK_DIRECTORIES(${LINK_DIRECTORIES} "d:\\soft\\boost_1_57_0\\build")
 
   if (MSVC)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  /EHa")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  /EHc")
   endif(MSVC)
 
   include (GenerateExportHeader)
@@ -23,6 +23,7 @@ IF(WIN32)
   endmacro(DEFINE_EXPORT)
   
   find_package(Boost 1.57.0 REQUIRED unit_test_framework)
+  
 else(WIN32)
 
   macro(DEFINE_EXPORT libname)
@@ -42,6 +43,12 @@ ENDIF(WIN32)
 IF(Boost_FOUND)
   INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
   LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
+
+  set(Boost_USE_STATIC_LIBS        OFF)
+  set(Boost_USE_MULTITHREADED      ON)
+  set(Boost_USE_STATIC_RUNTIME     OFF)
+  set(BOOST_ALL_DYN_LINK           ON) 
+
 ENDIF(Boost_FOUND)
 
 enable_testing()
