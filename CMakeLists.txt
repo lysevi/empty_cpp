@@ -48,13 +48,6 @@ SET(EMPTYCPP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE STRING "emptycpp incl
 INCLUDE_DIRECTORIES(${EMPTYCPP_INCLUDE_DIR})
 add_subdirectory (libemptycpp)
 
-if(EMPTYCPP_ENABLE_TESTS)
-   cmake_policy(SET CMP0048 OLD)
-   include_directories(extern/Catch/include)
-   add_subdirectory (unittests)
-   enable_testing()
-endif(EMPTYCPP_ENABLE_TESTS)
-
 if(EMPTYCPP_ENABLE_BENCHMARKS)
    set(BENCHMARK_ENABLE_TESTING OFF)
    add_subdirectory(extern/benchmark)
@@ -62,4 +55,12 @@ if(EMPTYCPP_ENABLE_BENCHMARKS)
    set_target_properties(benchmark PROPERTIES FOLDER Extern)
    add_subdirectory (microbenchmarks)
 endif(EMPTYCPP_ENABLE_BENCHMARKS)
+
+if(EMPTYCPP_ENABLE_TESTS)
+   cmake_policy(SET CMP0048 OLD)
+   include_directories(extern/Catch/include)
+   add_subdirectory (unittests)
+   enable_testing()
+endif(EMPTYCPP_ENABLE_TESTS)
+
 
