@@ -23,6 +23,7 @@ SET(EMPTYCPP_LIBS emptycpp CACHE STRING "emptycpp libs.")
 
 add_library(emptycpp SHARED ${SRC})
 TARGET_LINK_LIBRARIES(emptycpp ${CMAKE_THREAD_LIBS_INIT})
+cotire(emptycpp)
 
 GENERATE_EXPORT_HEADER(emptycpp
     BASE_NAME emptycpp
