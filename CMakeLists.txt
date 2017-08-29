@@ -1,60 +1,55 @@
-cmake_minimum_required (VERSION 2.8)
-project (empty_cpp)
+cmake_minimum_required (VERSION 3.1)
+set(PROJECT "emptycpp")
+project (${PROJECT} VERSION 0.0.1)
 
-IF(WIN32)
-  MESSAGE(STATUS "WIN32:")
-  set(BOOST_ROOT "d:\\soft\\boost_1_57_0\\boost_1_57_0")
-  MESSAGE(STATUS "+ boost root: " ${BOOST_ROOT})
-  #LINK_DIRECTORIES(${LINK_DIRECTORIES} "d:\\soft\\boost_1_57_0\\build")
+IF(NOT CMAKE_BUILD_TYPE)
+    message(STATUS "CMAKE_BUILD_TYPE is not set, set to default = RELWITHDEBINFO")
+    SET(CMAKE_BUILD_TYPE "RELWITHDEBINFO")
+ENDIF()
 
-  if (MSVC)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  /EHc")
-  endif(MSVC)
-
-  include (GenerateExportHeader)
-  macro(DEFINE_EXPORT libname)
-	GENERATE_EXPORT_HEADER(${libname}
-      BASE_NAME ${libname}
-      EXPORT_MACRO_NAME _EXPORT
-      EXPORT_FILE_NAME ${libname}_export.h
-      STATIC_DEFINE ${libname}_BUILT_AS_STATIC
-	  )
-	SET_TARGET_PROPERTIES (${libname} PROPERTIES DEFINE_SYMBOL  "COMPILING_DLL" )
-  endmacro(DEFINE_EXPORT)
-  
-  find_package(Boost 1.57.0 REQUIRED unit_test_framework)
-  
-else(WIN32)
-
-  macro(DEFINE_EXPORT libname)
-  endmacro(DEFINE_EXPORT)
-
-  set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS} -Wwrite-strings -g -ftest-coverage -fprofile-arcs -Wsign-compare")
-  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG -Wall -Werror")
-  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -Werror")
-
-  set(BoostUSESTATIC_LIBS OFF)
-
-  find_package(Boost 1.57.0 REQUIRED unit_test_framework)
-ENDIF(WIN32)
+MESSAGE( STATUS "CMAKE_BUILD_TYPE: " ${CMAKE_BUILD_TYPE} )
 
 
+option(EMPTYCPP_ENABLE_TESTS "Enable testing." ON)
+option(EMPTYCPP_ENABLE_DOUBLECHECKS "More checks in code." ON)
+option(EMPTYCPP_ASAN_UBSAN "Enable address & undefined behavior sanitizer for binary." OFF)
+option(EMPTYCPP_MSAN "Enable memory sanitizer for binary." OFF)
 
-IF(Boost_FOUND)
-  INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
-  LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
+if((EMPTYCPP_ASAN_UBSAN AND EMPTYCPP_MSAN))
+  message(FATAL_ERROR "Sanitizers cannot be enabled simultaneously.")
+endif()
 
-  set(Boost_USE_STATIC_LIBS        OFF)
-  set(Boost_USE_MULTITHREADED      ON)
-  set(Boost_USE_STATIC_RUNTIME     OFF)
-  set(BOOST_ALL_DYN_LINK           ON) 
+MESSAGE(STATUS "Options: ")
+MESSAGE(STATUS "EMPTYCPP_ENABLE_TESTS - " ${EMPTYCPP_ENABLE_TESTS})
+MESSAGE(STATUS "EMPTYCPP_ENABLE_BENCHMARKS - " ${EMPTYCPP_ENABLE_BENCHMARKS})
+MESSAGE(STATUS "EMPTYCPP_ENABLE_DOUBLECHECKS - " ${EMPTYCPP_ENABLE_DOUBLECHECKS})
+MESSAGE(STATUS "EMPTYCPP_ASAN_UBSAN - " ${EMPTYCPP_ASAN_UBSAN})
+MESSAGE(STATUS "EMPTYCPP_MSAN - " ${EMPTYCPP_MSAN})
 
-ENDIF(Boost_FOUND)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-enable_testing()
+include(AddCXXCompilerFlag)
+include(CompillerSettings)
+include(CompillerSettings)
 
-add_subdirectory (utils)
-add_subdirectory (library)
-add_subdirectory (test)
-add_executable (empty main.cpp)
-TARGET_LINK_LIBRARIES(empty utils library)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+IF(EMPTYCPP_ENABLE_DOUBLECHECKS)
+ add_definitions(-DDOUBLE_CHECKS)
+ENDIF()
+
+SET(EMPTYCPP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE STRING "emptycpp include dir.")
+INCLUDE_DIRECTORIES(${EMPTYCPP_INCLUDE_DIR})
+add_subdirectory (libemptycpp)
+
+if(EMPTYCPP_ENABLE_TESTS)
+   cmake_policy(SET CMP0048 OLD)
+   include_directories(extern/Catch/include)
+   add_subdirectory (unittests)
+   enable_testing()
+endif(EMPTYCPP_ENABLE_TESTS)
