@@ -38,29 +38,7 @@ if [ "$CLANG" == "FALSE" ]; then
     fi
 fi
 
-if [ "$CLANG" == "TRUE" ]; then
-    echo "clang compiller " `clang --version`
-    export CC="clang"
-    export CXX="clang++"
-    echo "sani ==> ${SANITIZER}"
-    echo "is_release ==> ${IS_RELEASE}"
-    if [[ "${SANITIZER}" == "ASAN_UBSAN" ]]; then
-	echo "ASAN_UBSAN enabled"
-	cmake  -DBoost_USE_STATIC_LIBS=ON  -DBoost_USE_MULTITHREADED=ON  -DBoost_USE_STATIC_RUNTIME=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS_RELEASE="${CMAKE_CXX_FLAGS_RELEASE}"  -DCMAKE_EXE_LINKER_FLAGS="${CMAKE_EXE_LINKER_FLAGS}"   -DEMPTYCPP_ENABLE_BENCHMARKS=OFF -DEMPTYCPP_ASAN_UBSAN=ON  -DEMPTYCPP_ENABLE_DOUBLECHECKS=ON.
-    fi
-
-    if [[ "${SANITIZER}" == "MSAN" ]]; then
-	echo "MSAN enabled"
-	cmake -DBoost_USE_STATIC_LIBS=ON -DBoost_USE_MULTITHREADED=ON  -DBoost_USE_STATIC_RUNTIME=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS_RELEASE="${CMAKE_CXX_FLAGS_RELEASE}"  -DCMAKE_EXE_LINKER_FLAGS="${CMAKE_EXE_LINKER_FLAGS}"  -DEMPTYCPP_MSAN=ON   -DEMPTYCPP_ENABLE_DOUBLECHECKS=ON  -DEMPTYCPP_ENABLE_BENCHMARKS=OFF .
-    fi
-
-    if [[ -z "${SANITIZER}" ]]; then
-	if [[ "${IS_RELEASE}" == "TRUE" ]]; then	
-	    echo "default release build."
-	    cmake -DBoost_USE_STATIC_LIBS=ON -DEMPTYCPP_ENABLE_DOUBLECHECKS=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS_RELEASE="${CMAKE_CXX_FLAGS_RELEASE}"   -DCMAKE_EXE_LINKER_FLAGS="${CMAKE_EXE_LINKER_FLAGS}"  -DCMAKE_BUILD_TYPE=RELWITHDEBINFO  -DEMPTYCPP_ENABLE_BENCHMARKS=OFF  .
-        fi
-    fi
-fi
+cmake .
 
 if [ $? -ne 0 ]; then
     exit 1
