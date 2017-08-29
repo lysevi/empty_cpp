@@ -12,6 +12,7 @@ MESSAGE( STATUS "CMAKE_BUILD_TYPE: " ${CMAKE_BUILD_TYPE} )
 
 option(EMPTYCPP_ENABLE_TESTS "Enable testing." ON)
 option(EMPTYCPP_ENABLE_DOUBLECHECKS "More checks in code." ON)
+option(EMPTYCPP_ENABLE_BENCHMARKS "Enable benchmarks." ON)
 option(EMPTYCPP_ASAN_UBSAN "Enable address & undefined behavior sanitizer for binary." OFF)
 option(EMPTYCPP_MSAN "Enable memory sanitizer for binary." OFF)
 
@@ -53,3 +54,12 @@ if(EMPTYCPP_ENABLE_TESTS)
    add_subdirectory (unittests)
    enable_testing()
 endif(EMPTYCPP_ENABLE_TESTS)
+
+if(EMPTYCPP_ENABLE_BENCHMARKS)
+   set(BENCHMARK_ENABLE_TESTING OFF)
+   add_subdirectory(extern/benchmark)
+   include_directories(extern/benchmark/include)
+   set_target_properties(benchmark PROPERTIES FOLDER Extern)
+   add_subdirectory (microbenchmarks)
+endif(EMPTYCPP_ENABLE_BENCHMARKS)
+
