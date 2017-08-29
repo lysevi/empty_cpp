@@ -11,7 +11,7 @@ if [ "$CLANG" == "FALSE" ]; then
     echo "is_release ==> ${IS_RELEASE}"
     if [[ "$GCOV" == "TRUE" ]]; then
 	echo "enable test coverage..."
-	cmake -DBENCHMARK_ENABLE_TESTING=OFF -DCMAKE_BUILD_TYPE=Release -DEMPTYCPP_ENABLE_DOUBLECHECKS=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -ftest-coverage -O0 -g"  -DEMPTYCPP_ENABLE_BENCHMARKS=ON  -DCMAKE_EXE_LINKER_FLAGS="${CMAKE_EXE_LINKER_FLAGS}"  .
+	cmake -DBENCHMARK_ENABLE_TESTING=OFF -DCMAKE_BUILD_TYPE=Debug -DEMPTYCPP_ENABLE_DOUBLECHECKS=ON  -DCMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -ftest-coverage -O0 -g"  -DEMPTYCPP_ENABLE_BENCHMARKS=ON  -DCMAKE_EXE_LINKER_FLAGS="${CMAKE_EXE_LINKER_FLAGS}"  .
     else
 	echo "disable test coverage..."
 	if [[ "${SANITIZER}" == "ASAN_UBSAN" ]]; then
@@ -27,12 +27,12 @@ if [ "$CLANG" == "FALSE" ]; then
 	if [[ -z "${SANITIZER}" ]]; then
 	    if [[ "${IS_RELEASE}" == "TRUE" ]]; then	
 		echo "default release build."
-		cmake -DBENCHMARK_ENABLE_TESTING=OFF -DCMAKE_BUILD_TYPE=RELWITHDEBINFO -DEMPTYCPP_ENABLE_DOUBLECHECKS=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS_RELEASE="${CMAKE_CXX_FLAGS_RELEASE}"  -DEMPTYCPP_ENABLE_BENCHMARKS=ON  -DCMAKE_EXE_LINKER_FLAGS="${CMAKE_EXE_LINKER_FLAGS}"  .
+		cmake -DBENCHMARK_ENABLE_TESTING=OFF -DCMAKE_BUILD_TYPE=RELWITHDEBINFO -DEMPTYCPP_ENABLE_DOUBLECHECKS=OFF -DCMAKE_CXX_FLAGS_RELEASE="${CMAKE_CXX_FLAGS_RELEASE}"  -DEMPTYCPP_ENABLE_BENCHMARKS=ON  -DCMAKE_EXE_LINKER_FLAGS="${CMAKE_EXE_LINKER_FLAGS}"  .
         fi
 
 	    if [[ -z "${IS_RELEASE}" ]]; then	
 		echo "default build."
-		cmake -DBENCHMARK_ENABLE_TESTING=OFF -DCMAKE_BUILD_TYPE=Release -DEMPTYCPP_ENABLE_DOUBLECHECKS=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS_RELEASE="${CMAKE_CXX_FLAGS_RELEASE}"  -DEMPTYCPP_ENABLE_BENCHMARKS=ON  -DCMAKE_EXE_LINKER_FLAGS="${CMAKE_EXE_LINKER_FLAGS}"  .
+		cmake -DBENCHMARK_ENABLE_TESTING=OFF -DCMAKE_BUILD_TYPE=Release -DEMPTYCPP_ENABLE_DOUBLECHECKS=ON -DCMAKE_CXX_FLAGS_RELEASE="${CMAKE_CXX_FLAGS_RELEASE}"  -DEMPTYCPP_ENABLE_BENCHMARKS=ON  -DCMAKE_EXE_LINKER_FLAGS="${CMAKE_EXE_LINKER_FLAGS}"  .
         fi
 	fi
     fi
@@ -61,7 +61,7 @@ if [[ "$GCOV" == "TRUE" ]]; then
     echo "lcov --directory . --capture --output-file coverage.info"
     lcov --directory . --capture --output-file coverage.info # capture coverage info
     echo "lcov --remove coverage.info 'bin/*' 'tests/*' 'extern/*' 'benchmarks/*' '/usr/*'"
-    lcov --remove coverage.info './bin/*' './tests/*' './extern/*' './benchmarks/*' '/usr/*' --output-file coverage.info # filter out system and test code
+    lcov --remove coverage.info './bin/*' './unittests/*' './extern/*' './benchmarks/*' '/usr/*' --output-file coverage.info # filter out system and test code
     echo "lcov --list coverage.info"    
     lcov --list coverage.info # debug before upload
     bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports"
