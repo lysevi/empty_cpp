@@ -1,0 +1,66 @@
+sudo: required
+dist: trusty
+
+language: cpp
+
+group: edge
+
+cache:
+  directories:
+    - $HOME/travisCacheDir
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - libboost-dev  
+      - libboost-system-dev  
+      - libasio-dev 
+      - cmake  
+      - g++-6  
+      - gcc-6 
+      - cpp-6
+      - libjemalloc-dev
+      - lcov
+      
+before_install:
+   - pip install --user cpp-coveralls
+   - cd ${TRAVIS_BUILD_DIR}
+   - wget http://ftp.de.debian.org/debian/pool/main/l/lcov/lcov_1.13.orig.tar.gz
+   - tar xf lcov_1.13.orig.tar.gz
+   - cd lcov-1.13/
+   - sudo make install
+   - cd ..
+   - lcov --version
+   - g++ --version
+   - cmake --version
+   - git submodule init
+   - git submodule update
+    
+matrix:
+  include:
+    - os: linux
+      compiler: gcc-6
+      env: GCOV=TRUE CLANG=FALSE
+    - os: linux
+      compiler: gcc-6
+      env: SANITIZER=MSAN GCOV=FALSE CLANG=FALSE
+    - os: linux
+      compiler: gcc-6
+      env: SANITIZER=ASAN_UBSAN GCOV=FALSE CLANG=FALSE
+    - os: linux
+      compiler: gcc-6
+      env: IS_RELEASE=TRUE CLANG=FALSE
+#    - os: linux
+#      compiler: clang
+#      env: CLANG=TRUE SANITIZER=MSAN GCOV=FALSE
+#    - os: linux
+#      compiler: clang
+#      env:  CLANG=TRUE SANITIZER=ASAN_UBSAN GCOV=FALSE
+#    - os: linux
+#      compiler: clang
+#      env:  CLANG=TRUE IS_RELEASE=TRUE
+
+script: 
+    - bash .travis/build.sh
