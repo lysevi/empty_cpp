@@ -1,4 +1,4 @@
-#include <benchmark/benchmark_api.h>
+#include <benchmark/benchmark.h>
 #include <string>
 static void BM_StringCtor(benchmark::State &state) {
   while (state.KeepRunning()) {
