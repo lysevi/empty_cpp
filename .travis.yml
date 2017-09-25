@@ -15,8 +15,6 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - libboost-dev  
-      - libboost-date-time-dev
-      - libasio-dev 
       - cmake  
       - g++-6  
       - gcc-6 
