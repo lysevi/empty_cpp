@@ -7,8 +7,6 @@ FILE(GLOB HDRS "*.h")
 FILE(GLOB SRC "*.cpp")
 
 add_executable(unittests ${HDRS} ${SRC})
-MESSAGE(STATUS ${Boost_LIBRARIES})
-MESSAGE(STATUS ${Boost_LIBRARY_DIRS})
 TARGET_LINK_LIBRARIES(unittests ${Boost_LIBRARIES} ${EMPTYCPP_LIBS})
 
 add_test(unittests ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/unittests) 
