@@ -7,7 +7,7 @@ FILE(GLOB SRC "*.cpp")
 
 add_executable(microbenchmarks ${HDRS} ${SRC})
 TARGET_LINK_LIBRARIES(microbenchmarks ${EMPTYCPP_LIBS} benchmark)
-target_link_libraries(microbenchmarks benchmark)
 set_target_properties(microbenchmarks PROPERTIES FOLDER Benchmarks)
+
 add_test(microbenchmarks ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/microbenchmarks) 
 cotire(microbenchmarks)
