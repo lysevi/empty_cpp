@@ -47,7 +47,7 @@ set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF) 
 
 
-set(BOOST_DEP system filesystem)
+set(BOOST_DEP date_time filesystem system)
 
 IF(WIN32 AND MSVC)
   find_package(Boost 1.54.0 COMPONENTS ${BOOST_DEP} REQUIRED)
