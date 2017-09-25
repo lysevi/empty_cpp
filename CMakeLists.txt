@@ -47,7 +47,7 @@ set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF) 
 
 
-set(BOOST_DEP date_time filesystem system)
+set(BOOST_DEP system date_time filesystem )
 
 IF(WIN32 AND MSVC)
   find_package(Boost 1.54.0 COMPONENTS ${BOOST_DEP} REQUIRED)
@@ -59,6 +59,8 @@ ENDIF()
 IF(Boost_FOUND)
   INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
   LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
+   SET(EMPTYCPP_LIB_PATH ${Boost_LIBRARY_DIRS}
+              CACHE STRING "emptycpp libs path.")
 else()
   MESSAGE(FATAL_ERROR "boost not found")
   EXIT()
