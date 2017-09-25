@@ -40,6 +40,37 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+set(Boost_USE_STATIC_LIBS OFF)
+set(Boost_USE_MULTITHREADED ON)  
+set(Boost_USE_STATIC_RUNTIME OFF) 
+
+set(BOOST_DEP system filesystem)
+
+IF(DARIADB_ENABLE_DOUBLECHECKS)
+ add_definitions(-DDOUBLE_CHECKS)
+ENDIF()
+
+IF(WIN32 AND MSVC)
+  find_package(Boost 1.54.0 COMPONENTS ${BOOST_DEP} REQUIRED)
+else()
+  set(BOOST_DEP ${BOOST_DEP} program_options)
+  find_package(Boost  REQUIRED ${BOOST_DEP})
+ENDIF()
+
+
+########## BOOST
+
+IF(Boost_FOUND)
+  INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
+  LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
+  SET(DARIADB_LIB_PATH ${Boost_LIBRARY_DIRS}
+              CACHE STRING "dariadb libs path.")
+else()
+  MESSAGE(FATAL_ERROR "boost not found")
+  EXIT()
+ENDIF()
+
+
 IF(EMPTYCPP_ENABLE_DOUBLECHECKS)
  add_definitions(-DDOUBLE_CHECKS)
 ENDIF()
