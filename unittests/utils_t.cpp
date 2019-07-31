@@ -1,6 +1,5 @@
 #include <libemptycpp/utils/strings.h>
 #include <libemptycpp/utils/utils.h>
-#include <libemptycpp/utils/cz.h>
 #include <libemptycpp/utils/bitoperations.h>
 
 #include "helpers.h"
@@ -25,15 +24,6 @@ TEST_CASE("Utils.to_lower") {
   auto s = "UPPER STRING";
   auto res = emptycpp::utils::strings::to_lower(s);
   EXPECT_EQ(res, "upper string");
-}
-
-TEST_CASE("Utils.CountZero") {
-  EXPECT_EQ(emptycpp::utils::clz(67553994410557440), 8);
-  EXPECT_EQ(emptycpp::utils::clz(3458764513820540928), 2);
-  EXPECT_EQ(emptycpp::utils::clz(15), 60);
-
-  EXPECT_EQ(emptycpp::utils::ctz(240), 4);
-  EXPECT_EQ(emptycpp::utils::ctz(3840), 8);
 }
 
 TEST_CASE("Utils.BitOperations") {
