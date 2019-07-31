@@ -9,6 +9,13 @@ ENDIF()
 
 MESSAGE( STATUS "CMAKE_BUILD_TYPE: " ${CMAKE_BUILD_TYPE} )
 
+if (NOT EXISTS conanbuildinfo.cmake)
+  message(FATAL_ERROR "Conan needs to be executed: conan install <path_to_your_conanfile.txt>")
+endif ()
+ 
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup()
+
 
 option(EMPTYCPP_ENABLE_TESTS "Enable testing." ON)
 option(EMPTYCPP_ENABLE_DOUBLECHECKS "More checks in code." ON)
@@ -27,7 +34,8 @@ MESSAGE(STATUS "EMPTYCPP_ENABLE_DOUBLECHECKS - " ${EMPTYCPP_ENABLE_DOUBLECHECKS}
 MESSAGE(STATUS "EMPTYCPP_ASAN_UBSAN - " ${EMPTYCPP_ASAN_UBSAN})
 MESSAGE(STATUS "EMPTYCPP_MSAN - " ${EMPTYCPP_MSAN})
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" "${CMAKE_CURRENT_SOURCE_DIR}/extern/cotire/CMake")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/cotire/CMake")
 
 include(AddCXXCompilerFlag)
 include(CompillerSettings)
@@ -41,27 +49,20 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 ########## BOOST
+IF(NOT HEADER_ONLY)
+    list(FIND CONAN_DEFINES_BOOST "-DBOOST_USE_STATIC_LIBS" IS_STATIC)
+    if(${IS_STATIC} GREATER -1)
+        set(Boost_USE_STATIC_LIBS ON)
+    else()
+        set(Boost_USE_STATIC_LIBS OFF)
+	endif()
+endif()
 
-set(Boost_USE_STATIC_LIBS OFF)
-set(Boost_USE_MULTITHREADED ON)  
-set(Boost_USE_STATIC_RUNTIME OFF) 
-
-
-set(BOOST_DEP system)
-
-IF(WIN32 AND MSVC)
-  find_package(Boost 1.54.0 COMPONENTS ${BOOST_DEP} REQUIRED)
-else()
-  set(BOOST_DEP ${BOOST_DEP})
-  find_package(Boost  REQUIRED ${BOOST_DEP})
-ENDIF()
+add_definitions(-DBOOST_ASIO_NO_DEPRECATED)
+find_package(Boost 1.69.0 COMPONENTS system date_time REQUIRED)
 
 IF(Boost_FOUND)
-  INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
-  LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
-   SET(EMPTYCPP_LIB_PATH ${Boost_LIBRARY_DIRS}
-              CACHE STRING "emptycpp libs path.")
-else()
+else()	
   MESSAGE(FATAL_ERROR "boost not found")
   EXIT()
 ENDIF()
@@ -80,16 +81,11 @@ if(EMPTYCPP_ENABLE_TESTS)
 endif(EMPTYCPP_ENABLE_TESTS)
 
 if(EMPTYCPP_ENABLE_BENCHMARKS)
-   set(BENCHMARK_ENABLE_TESTING OFF)
-   add_subdirectory(extern/benchmark)
-   include_directories(extern/benchmark/include)
-   set_target_properties(benchmark PROPERTIES FOLDER Extern)
-   add_subdirectory (microbenchmarks)
+   add_definitions(-DEMPTYCPP_ENABLE_BENCHMARKS)
 endif(EMPTYCPP_ENABLE_BENCHMARKS)
 
 if(EMPTYCPP_ENABLE_TESTS)
-   cmake_policy(SET CMP0048 OLD)
-   include_directories(extern/Catch/include)
+   include_directories(extern/Catch2/single_include/catch2/)
    add_subdirectory (unittests)
 endif(EMPTYCPP_ENABLE_TESTS)
 

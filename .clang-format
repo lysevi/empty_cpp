@@ -8,7 +8,7 @@ AlignConsecutiveDeclarations: false
 AlignEscapedNewlinesLeft: false
 AlignOperands:   true
 AlignTrailingComments: true
-AllowAllParametersOfDeclarationOnNextLine: true
+AllowAllParametersOfDeclarationOnNextLine: false
 AllowShortBlocksOnASingleLine: false
 AllowShortCaseLabelsOnASingleLine: false
 AllowShortFunctionsOnASingleLine: Inline
@@ -17,9 +17,9 @@ AllowShortLoopsOnASingleLine: false
 AlwaysBreakAfterDefinitionReturnType: None
 AlwaysBreakAfterReturnType: None
 AlwaysBreakBeforeMultilineStrings: false
-AlwaysBreakTemplateDeclarations: false
-BinPackArguments: true
-BinPackParameters: true
+AlwaysBreakTemplateDeclarations: true
+BinPackArguments: false
+BinPackParameters: false
 BraceWrapping:   
   AfterClass:      false
   AfterControlStatement: false
@@ -32,10 +32,11 @@ BraceWrapping:
   BeforeCatch:     false
   BeforeElse:      false
   IndentBraces:    false
-BreakBeforeBinaryOperators: None
+BreakBeforeBinaryOperators: All
 BreakBeforeBraces: Attach
 BreakBeforeTernaryOperators: true
-BreakConstructorInitializersBeforeComma: false
+
+BreakConstructorInitializersBeforeComma: true
 ColumnLimit:     90
 CommentPragmas:  '^ IWYU pragma:'
 ConstructorInitializerAllOnOneLineOrOnePerLine: false
@@ -49,12 +50,16 @@ ForEachMacros:   [ foreach, Q_FOREACH, BOOST_FOREACH ]
 IncludeCategories: 
   - Regex:           '^"'
     Priority:        1
-  - Regex:           '^<lib.*'
+  - Regex:           '^<librft.*'
     Priority:        2
-  - Regex:           '^<boost.*'
+  - Regex:           '^<libdialler.*'
     Priority:        3
-  - Regex:           '.*'
+  - Regex:           '^<libutils.*'
     Priority:        4
+  - Regex:           '^<boost.*'
+    Priority:        5
+  - Regex:           '.*'
+    Priority:        6
 IndentCaseLabels: false
 IndentWidth:     2
 IndentWrappedFunctionNames: false
