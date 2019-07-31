@@ -2,7 +2,7 @@
 
 template of empty C++ project
 
-[![Build Status](https://travis-ci.org/lysevi/empty_cpp.svg?branch=master)](https://travis-ci.org/lysevi/empty_cpp) [![codecov](https://codecov.io/gh/lysevi/dqueue/branch/master/graph/badge.svg)](https://codecov.io/gh/lysevi/empty_cpp)
+[![Build Status](https://travis-ci.org/lysevi/empty_cpp.svg?branch=master)](https://travis-ci.org/lysevi/empty_cpp) [![codecov](https://codecov.io/gh/lysevi/dqueue/branch/master/graph/badge.svg)](https://codecov.io/gh/lysevi/empty_cpp) [![Coverage Status](https://coveralls.io/repos/github/lysevi/empty_cpp/badge.svg?branch=master)](https://coveralls.io/github/lysevi/empty_cpp?branch=master)
 
 ## Build
 ---
